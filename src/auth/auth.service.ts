@@ -1,37 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { Credentials } from 'Interface/credentials.dto';
+import { Hashedpassword } from 'Utils/HashPassword';
 import { Response } from 'express';
-import * as bcrypt from 'bcrypt';
+
+
 
 import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
+  public prismaClient = new PrismaClient();
 
-     public prismaClient = new PrismaClient();
-    
-  async signUp(body: Credentials) {
+  async signUp(body: Credentials, response) {
     const { email, password, username } = body;
 
+    const hashedPassword = await Hashedpassword(password);
 
-   const hashedPassword = await this.Hashedpassword(password);
+    const emailExist = await this.prismaClient.credentials.findUnique({
+      where: { email: email },
+    });
 
-   const Creates =  await this.prismaClient.credentials.create({
-      data:{
-        username:username,
-        email:email,
-        password:hashedPassword
-      }
-    })
+    if (emailExist)
+      return response.json({ message: 'Email is already Exist!' });
 
-    return Creates
+    const Creates = await this.prismaClient.credentials.create({
+      data: {
+        username: username,
+        email: email,
+        password: hashedPassword,
+      },
+    });
 
+    return Creates;
   }
 
-  async Hashedpassword(passsword: string) {
-    const saltOrRounds = 10;
 
-    const hashed = await bcrypt.hash(passsword, saltOrRounds);
-    return hashed;
-  }
+
 }

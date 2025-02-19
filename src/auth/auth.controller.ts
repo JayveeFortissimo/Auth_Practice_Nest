@@ -13,7 +13,7 @@ constructor(private readonly authService: AuthService) {}
   async signUp(@Body() body: Credentials, @Res() response: Response) {
     try {
 
-        await this.authService.signUp(body);
+        await this.authService.signUp(body, response);
 
        return response.status(HttpStatus.OK).json({
         message:"SignUp Successfully"
