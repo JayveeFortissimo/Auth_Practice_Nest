@@ -11,14 +11,20 @@ export class AuthService {
      public prismaClient = new PrismaClient();
     
   async signUp(body: Credentials) {
-    const { email, passsword } = body;
+    const { email, password, username } = body;
 
 
-   const hashedPassword = await this.Hashedpassword(passsword);
-/*
-    await this.prismaClient.credentials.create({
+   const hashedPassword = await this.Hashedpassword(password);
+
+   const Creates =  await this.prismaClient.credentials.create({
+      data:{
+        username:username,
+        email:email,
+        password:hashedPassword
+      }
     })
-*/
+
+    return Creates
 
   }
 

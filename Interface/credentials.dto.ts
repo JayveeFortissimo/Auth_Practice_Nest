@@ -14,6 +14,6 @@ export class Credentials{
 
     @IsEmpty()
     @IsString()
-    passsword:string
+    password:string
 
 }
