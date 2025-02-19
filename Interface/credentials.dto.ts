@@ -7,9 +7,9 @@ export class Credentials{
     @IsString()
     username:string
 
-    @IsEmail()
     @IsString()
     @IsEmpty()
+    @IsEmail()
     email:string
 
     @IsEmpty()
