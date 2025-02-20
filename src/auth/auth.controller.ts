@@ -1,4 +1,5 @@
-import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
+                                                   //!Need Pala neto for validation 
+import { Controller, Post, Body, Res, HttpStatus, ValidationPipe } from '@nestjs/common';
 import { Response } from 'express';
 import { Credentials } from 'Interface/credentials.dto';
 import { AuthService } from './auth.service';
@@ -10,7 +11,7 @@ constructor(private readonly authService: AuthService) {}
 
 
   @Post('signUp')
-  async signUp(@Body() body: Credentials, @Res() response: Response) {
+  async signUp(@Body(ValidationPipe) body: Credentials, @Res() response: Response) {
     try {
 
         await this.authService.signUp(body, response);
