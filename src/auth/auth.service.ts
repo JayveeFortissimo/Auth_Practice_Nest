@@ -1,9 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { Credentials } from 'Interface/credentials.dto';
-import { Hashedpassword } from 'Utils/HashPassword';
+import { Hashedpassword, ComparePasswrod } from 'Utils/HashPassword';
 import { Response } from 'express';
-
-
 
 import { PrismaClient } from '@prisma/client';
 
@@ -34,6 +32,22 @@ export class AuthService {
     return Creates;
   }
 
+  async signIN(body: Credentials, response) {
+    const { email, password } = body;
 
+    const foundUser = await this.prismaClient.credentials.findUnique({
+      where: { email: email },
+    });
 
+    if (!foundUser) throw new BadRequestException('Wrong Credentials!');
+
+    const validPassword = await ComparePasswrod(password, foundUser.password);
+
+    if (!validPassword)
+      throw new BadRequestException('Password are not matched!');
+
+    return response
+      .status(200)
+      .json({ message: `Welcome user: ${foundUser.username}` });
+  }
 }
